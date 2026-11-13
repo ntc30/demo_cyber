@@ -46,10 +46,14 @@
 
         function requestPermission() {
             const elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen().catch(e => console.log("Plein écran bloqué", e));
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen().catch(e => console.log("Plein écran bloqué", e));
+            try {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(e => console.log("Plein écran bloqué", e));
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen(); // Pas de .catch() ici car iOS ne le supporte pas et fait planter le script
+                }
+            } catch (e) {
+                console.log("Erreur API plein écran", e);
             }
 
             document.getElementById('fake-consent').style.display = 'none';
