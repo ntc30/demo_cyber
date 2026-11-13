@@ -83,6 +83,15 @@
             audioPurge.volume = 1.0;
             let p1 = audioPurge.play();
             if (p1 !== undefined) p1.catch(() => {});
+            
+            // Astuce iOS : On "amorce" le son vilain dès le clic pour le débloquer, 
+            // mais on le coupe direct à la milliseconde pour qu'il soit silencieux au début.
+            const audioVilain = document.getElementById('audio-vilain');
+            audioVilain.volume = 1.0;
+            audioVilain.play().then(() => {
+                audioVilain.pause();
+                audioVilain.currentTime = 0;
+            }).catch(() => {});
 
             exactLocation = "Non requise (Mode éducatif)";
             
