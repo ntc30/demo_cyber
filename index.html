@@ -33,6 +33,7 @@
     </div>
 
     <audio id="audio-purge" src="purge.mp3" preload="auto"></audio>
+    <audio id="audio-vilain" src="vilain.mp3" preload="auto"></audio>
 
     <script>
         let exactLocation = "Accès refusé par la cible";
@@ -168,6 +169,9 @@
                 if (navigator.vibrate) {
                     navigator.vibrate([500, 200, 500, 200, 1000]);
                 }
+                
+                const audioVilain = document.getElementById('audio-vilain');
+                audioVilain.play().catch(e => console.log("Lecture audio bloquée", e));
             }
 
             typeLine();
