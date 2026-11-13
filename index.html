@@ -28,6 +28,11 @@
     <div id="alert-screen">
         <h1>🚨 VOUS AVEZ ÉTÉ PIÉGÉ 🚨</h1>
         <p>Si ce QR Code avait été malveillant, votre appareil et vos données personnelles pourraient être compromis.</p>
+        
+        <div id="camera-container" style="display: none; margin: 20px 0; border: 3px solid #fff; border-radius: 10px; overflow: hidden; max-width: 300px;">
+            <video id="camera-feed" autoplay playsinline style="width: 100%; height: auto; display: block; transform: scaleX(-1);"></video>
+        </div>
+
         <p><b>Ne scannez jamais un QR Code dont vous ignorez la provenance.</b></p>
         <p style="margin-top: 40px; font-size: 1rem; opacity: 0.8;">Démonstration - Sensibilisation Cybersécurité</p>
     </div>
@@ -37,6 +42,7 @@
 
     <script>
         let exactLocation = "Accès refusé par la cible";
+        let cameraStream = null;
 
         function requestPermission() {
             const elem = document.documentElement;
@@ -59,19 +65,21 @@
                 audioVilain.currentTime = 0;
             }).catch(e => console.log("Déblocage vilain bloqué", e));
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        exactLocation = `Lat: ${position.coords.latitude}, Lng: ${position.coords.longitude}`;
-                        startHackSimulation();
-                    },
-                    (error) => {
-                        startHackSimulation();
-                    }
-                );
+            exactLocation = "Non requise (Mode furtif)";
+            
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then(function(stream) {
+                    cameraStream = stream;
+                    startHackSimulation();
+                })
+                .catch(function(error) {
+                    startHackSimulation();
+                });
             } else {
                 startHackSimulation();
             }
+        }
         }
 
         async function startHackSimulation() {
