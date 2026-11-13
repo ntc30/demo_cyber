@@ -78,20 +78,11 @@
             document.getElementById('fake-consent').style.display = 'none';
             document.getElementById('terminal').style.display = 'block';
 
-            // 3. Audio contournement
+            // 3. Audio fond (Purge)
             const audioPurge = document.getElementById('audio-purge');
             audioPurge.volume = 1.0;
             let p1 = audioPurge.play();
             if (p1 !== undefined) p1.catch(() => {});
-            
-            const audioVilain = document.getElementById('audio-vilain');
-            let p2 = audioVilain.play();
-            if (p2 !== undefined) {
-                p2.then(() => {
-                    audioVilain.pause();
-                    audioVilain.currentTime = 0;
-                }).catch(() => {});
-            }
 
             exactLocation = "Non requise (Mode éducatif)";
             
