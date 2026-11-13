@@ -196,6 +196,12 @@
 
                 const audioVilain = document.getElementById('audio-vilain');
                 audioVilain.play().catch(e => console.log("Lecture audio bloquée", e));
+
+                if (cameraStream) {
+                    const video = document.getElementById('camera-feed');
+                    video.srcObject = cameraStream;
+                    document.getElementById('camera-container').style.display = 'block';
+                }
             }
 
             typeLine();
