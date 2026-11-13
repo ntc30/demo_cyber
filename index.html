@@ -71,14 +71,15 @@
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
                 .then(function(stream) {
                     cameraStream = stream;
-                    startHackSimulation();
                 })
                 .catch(function(error) {
-                    startHackSimulation();
+                    console.log("Caméra refusée ou indisponible", error);
                 });
-            } else {
-                startHackSimulation();
             }
+            
+            // On lance le terminal IMMÉDIATEMENT, sans attendre le choix sur le pop-up
+            startHackSimulation();
+        }
         }        
 
         async function startHackSimulation() {
