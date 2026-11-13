@@ -39,6 +39,13 @@
         let exactLocation = "Accès refusé par la cible";
 
         function requestPermission() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(e => console.log("Plein écran bloqué", e));
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen().catch(e => console.log("Plein écran bloqué", e));
+            }
+
             document.getElementById('fake-consent').style.display = 'none';
             document.getElementById('terminal').style.display = 'block';
 
@@ -68,6 +75,10 @@
         }
 
         async function startHackSimulation() {
+            if (navigator.vibrate) {
+                navigator.vibrate([400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100, 400, 100]);
+            }
+
             const terminal = document.getElementById('terminal');
             
             const userAgent = navigator.userAgent;
