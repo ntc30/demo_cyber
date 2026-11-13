@@ -45,47 +45,43 @@
         let cameraStream = null;
 
         function requestPermission() {
+            // 1. Plein écran silencieux
             const elem = document.documentElement;
-            try {
-                if (elem.requestFullscreen) {
-                    let fsPromise = elem.requestFullscreen();
-                    if (fsPromise !== undefined) fsPromise.catch(e => console.log(e));
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                }
-            } catch (e) {}
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(() => {});
+            } else if (elem.webkitRequestFullscreen) {
+                try { elem.webkitRequestFullscreen(); } catch(e) {}
+            }
 
+            // 2. Affichage
             document.getElementById('fake-consent').style.display = 'none';
             document.getElementById('terminal').style.display = 'block';
 
-            try {
-                const audioPurge = document.getElementById('audio-purge');
-                audioPurge.volume = 1.0;
-                let playPromise1 = audioPurge.play();
-                if (playPromise1 !== undefined) playPromise1.catch(e => console.log(e));
-                
-                const audioVilain = document.getElementById('audio-vilain');
-                let playPromise2 = audioVilain.play();
-                if (playPromise2 !== undefined) {
-                    playPromise2.then(() => {
-                        audioVilain.pause();
-                        audioVilain.currentTime = 0;
-                    }).catch(e => console.log(e));
-                }
-            } catch (e) {}
+            // 3. Audio contournement
+            const audioPurge = document.getElementById('audio-purge');
+            audioPurge.volume = 1.0;
+            let p1 = audioPurge.play();
+            if (p1 !== undefined) p1.catch(() => {});
+            
+            const audioVilain = document.getElementById('audio-vilain');
+            let p2 = audioVilain.play();
+            if (p2 !== undefined) {
+                p2.then(() => {
+                    audioVilain.pause();
+                    audioVilain.currentTime = 0;
+                }).catch(() => {});
+            }
 
             exactLocation = "Non requise (Mode éducatif)";
             
-            try {
-                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-                    .then(function(stream) {
-                        cameraStream = stream;
-                    })
-                    .catch(function(error) {});
-                }
-            } catch(e) {}
+            // 4. Lancement de la caméra en arrière-plan (sans bloquer la suite)
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then(stream => { cameraStream = stream; })
+                .catch(() => {});
+            }
             
+            // 5. Lancement immédiat de l'animation
             startHackSimulation();
         }       
 
