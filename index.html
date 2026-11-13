@@ -9,7 +9,26 @@
         #terminal { padding: 20px; font-size: 1.2rem; line-height: 1.5; }
         .cursor { display: inline-block; width: 10px; height: 1.2rem; background-color: #0f0; animation: blink 1s step-end infinite; vertical-align: bottom; }
         @keyframes blink { 50% { opacity: 0; } }
-        #alert-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #d32f2f; color: white; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; z-index: 1000; }
+        #alert-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background-color: #d32f2f;
+            color: white;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            box-sizing: border-box;
+            z-index: 1000;
+            overflow-y: auto;
+        }
         #alert-screen h1 { font-size: 3rem; margin-bottom: 20px; font-family: sans-serif; text-transform: uppercase; }
         #alert-screen p { font-size: 1.5rem; font-family: sans-serif; max-width: 800px; }
         #fake-consent { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; color: #333; font-family: sans-serif; text-align: center; padding: 20px; position: absolute; top: 0; left: 0; width: 100vw; z-index: 2000; box-sizing: border-box; }
