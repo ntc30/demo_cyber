@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérification de sécurité...</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #000; color: #0f0; font-family: 'Courier New', Courier, monospace; overflow: hidden; }
+        #terminal { padding: 20px; font-size: 1.2rem; line-height: 1.5; }
+        .cursor { display: inline-block; width: 10px; height: 1.2rem; background-color: #0f0; animation: blink 1s step-end infinite; vertical-align: bottom; }
+        @keyframes blink { 50% { opacity: 0; } }
+        #alert-screen { display: none; position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #d32f2f; color: white; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; z-index: 1000; }
+        #alert-screen h1 { font-size: 3rem; margin-bottom: 20px; font-family: sans-serif; text-transform: uppercase; }
+        #alert-screen p { font-size: 1.5rem; font-family: sans-serif; max-width: 800px; }
+        #fake-consent { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; color: #333; font-family: sans-serif; text-align: center; padding: 20px; position: absolute; top: 0; left: 0; width: 100vw; z-index: 2000; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+    <div id="fake-consent">
+        <h2 style="margin-bottom: 10px;">Vérification de sécurité requise</h2>
+        <p style="margin-bottom: 30px;">Pour accéder au document de la présentation, veuillez autoriser la vérification de l'appareil (anti-robot).</p>
+        <button onclick="requestPermission()" style="padding: 15px 30px; font-size: 1.2rem; background-color: #0056b3; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">Vérifier et Continuer</button>
+    </div>
+
+    <div id="terminal" style="display: none;"></div>
+    
+    <div id="alert-screen">
+        <h1>🚨 VOUS AVEZ ÉTÉ PIÉGÉ 🚨</h1>
+        <p>Si ce QR Code avait été malveillant, votre appareil et vos données personnelles pourraient être compromis.</p>
+        <p><b>Ne scannez jamais un QR Code dont vous ignorez la provenance.</b></p>
+        <p style="margin-top: 40px; font-size: 1rem; opacity: 0.8;">Démonstration - Sensibilisation Cybersécurité</p>
+    </div>
+
+    <script>
+        let exactLocation = "Accès refusé par la cible";
+
+        function requestPermission() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        exactLocation = `Lat: ${position.coords.latitude}, Lng: ${position.coords.longitude}`;
+                        launchTerminal();
+                    },
+                    (error) => {
+                        launchTerminal();
+                    }
+                );
+            } else {
+                launchTerminal();
+            }
+        }
+
+        function launchTerminal() {
+            document.getElementById('fake-consent').style.display = 'none';
+            document.getElementById('terminal').style.display = 'block';
+            startHackSimulation();
+        }
+
+        async function startHackSimulation() {
+            const terminal = document.getElementById('terminal');
+            
+            const userAgent = navigator.userAgent;
+            let os = "Système inconnu";
+            if (userAgent.indexOf("Win") != -1) os = "Windows";
+            if (userAgent.indexOf("Mac") != -1) os = "MacOS / iOS";
+            if (userAgent.indexOf("Linux") != -1) os = "Linux";
+            if (userAgent.indexOf("Android") != -1) os = "Android";
+            if (userAgent.indexOf("iPhone") != -1) os = "iOS";
+
+            const screenWidth = window.screen.width;
+            const screenHeight = window.screen.height;
+            
+            let batteryInfo = "Inconnue";
+            try {
+                if (navigator.getBattery) {
+                    const battery = await navigator.getBattery();
+                    const level = Math.round(battery.level * 100);
+                    const isCharging = battery.charging ? "en charge" : "sur batterie";
+                    batteryInfo = `${level}% (${isCharging})`;
+                }
+            } catch (e) {}
+
+            let networkInfo = "Inconnu";
+            if (navigator.connection && navigator.connection.effectiveType) {
+                networkInfo = navigator.connection.effectiveType.toUpperCase();
+            }
+
+            const localTime = new Date().toLocaleTimeString('fr-FR');
+            
+            let ip = "Récupération en cours...";
+            let city = "Inconnue";
+            let isp = "Inconnu";
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                ip = data.ip;
+                city = data.city;
+                isp = data.org; 
+            } catch (e) {
+                ip = "Non détectée (Bloquée)";
+            }
+
+            const lines = [
+                "[*] Initialisation de la connexion...",
+                "[*] Contournement des protocoles de sécurité...",
+                "[+] Accès à l'appareil réussi.",
+                `[!] OS Cible : ${os} | Heure système : ${localTime}`,
+                `[!] Statut Batterie : ${batteryInfo}`,
+                `[!] Type de connexion : ${networkInfo}`,
+                `[!] Fournisseur d'accès : ${isp}`,
+                `[!] Localisation estimée : ${city}`,
+                `[!] Adresse IP publique : ${ip}`,
+                `[!] COORDONNÉES GPS EXACTES : ${exactLocation}`,
+                "[*] Déploiement de la charge utile (payload)...",
+                "[!] Extraction des mots de passe en cache...",
+                "[!] Accès à la galerie photo : EN COURS...",
+                "ERREUR CRITIQUE. AFFICHAGE DE L'ÉCRAN DE PRÉVENTION."
+            ];
+
+            let lineIndex = 0;
+
+            function typeLine() {
+                if (lineIndex < lines.length) {
+                    terminal.innerHTML += lines[lineIndex] + "<br>";
+                    window.scrollTo(0, document.body.scrollHeight);
+                    lineIndex++;
+                    
+                    let delay = Math.random() * 800 + 400; 
+                    if (lineIndex > 3 && lineIndex < 11) delay = 200;
+                    
+                    setTimeout(typeLine, delay);
+                } else {
+                    setTimeout(showAlert, 1000);
+                }
+            }
+
+            function showAlert() {
+                document.getElementById('terminal').style.display = 'none';
+                document.getElementById('alert-screen').style.display = 'flex';
+                if (navigator.vibrate) {
+                    navigator.vibrate([500, 200, 500, 200, 1000]);
+                }
+            }
+
+            typeLine();
+        }
+    </script>
+</body>
+</html>
