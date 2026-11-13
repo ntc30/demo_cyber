@@ -39,37 +39,32 @@
         let exactLocation = "Accès refusé par la cible";
 
         function requestPermission() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        exactLocation = `Lat: ${position.coords.latitude}, Lng: ${position.coords.longitude}`;
-                        launchTerminal();
-                    },
-                    (error) => {
-                        launchTerminal();
-                    }
-                );
-            } else {
-                launchTerminal();
-            }
-        }
-
-        function launchTerminal() {
             document.getElementById('fake-consent').style.display = 'none';
             document.getElementById('terminal').style.display = 'block';
-            
-            const audio = document.getElementById('audio-purge');
-            audio.volume = 1.0;
-            audio.play().catch(e => console.log("Lecture audio bloquée", e));
 
-            // Déblocage furtif du 2ème son pendant le clic pour contourner la sécurité du navigateur
+            const audioPurge = document.getElementById('audio-purge');
+            audioPurge.volume = 1.0;
+            audioPurge.play().catch(e => console.log("Lecture purge bloquée", e));
+            
             const audioVilain = document.getElementById('audio-vilain');
             audioVilain.play().then(() => {
                 audioVilain.pause();
                 audioVilain.currentTime = 0;
-            }).catch(e => console.log("Déblocage audio bloqué", e));
+            }).catch(e => console.log("Déblocage vilain bloqué", e));
 
-            startHackSimulation();
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        exactLocation = `Lat: ${position.coords.latitude}, Lng: ${position.coords.longitude}`;
+                        startHackSimulation();
+                    },
+                    (error) => {
+                        startHackSimulation();
+                    }
+                );
+            } else {
+                startHackSimulation();
+            }
         }
 
         async function startHackSimulation() {
@@ -176,11 +171,10 @@
                 if (navigator.vibrate) {
                     navigator.vibrate([500, 200, 500, 200, 1000]);
                 }
-
-                // Coupe le premier son s'il tourne encore
+                
                 const audioPurge = document.getElementById('audio-purge');
                 audioPurge.pause();
-                
+
                 const audioVilain = document.getElementById('audio-vilain');
                 audioVilain.play().catch(e => console.log("Lecture audio bloquée", e));
             }
