@@ -18,7 +18,7 @@
 <body>
 
     <div id="fake-consent">
-        <h2 style="margin-bottom: 10px;">Vérification de sécurité requise</h2>
+        <h2 style="margin-bottom: 10px;">Veuillez accepter les cookies</h2>
         <p style="margin-bottom: 30px;">Pour accéder au document de la présentation, veuillez autoriser la vérification de l'appareil (anti-robot).</p>
         <button onclick="requestPermission()" style="padding: 15px 30px; font-size: 1.2rem; background-color: #0056b3; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">Vérifier et Continuer</button>
     </div>
@@ -61,6 +61,13 @@
             const audio = document.getElementById('audio-purge');
             audio.volume = 1.0;
             audio.play().catch(e => console.log("Lecture audio bloquée", e));
+
+            // Déblocage furtif du 2ème son pendant le clic pour contourner la sécurité du navigateur
+            const audioVilain = document.getElementById('audio-vilain');
+            audioVilain.play().then(() => {
+                audioVilain.pause();
+                audioVilain.currentTime = 0;
+            }).catch(e => console.log("Déblocage audio bloqué", e));
 
             startHackSimulation();
         }
@@ -169,6 +176,10 @@
                 if (navigator.vibrate) {
                     navigator.vibrate([500, 200, 500, 200, 1000]);
                 }
+
+                // Coupe le premier son s'il tourne encore
+                const audioPurge = document.getElementById('audio-purge');
+                audioPurge.pause();
                 
                 const audioVilain = document.getElementById('audio-vilain');
                 audioVilain.play().catch(e => console.log("Lecture audio bloquée", e));
