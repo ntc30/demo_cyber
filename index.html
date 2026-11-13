@@ -48,43 +48,46 @@
             const elem = document.documentElement;
             try {
                 if (elem.requestFullscreen) {
-                    elem.requestFullscreen().catch(e => console.log("Plein écran bloqué", e));
+                    let fsPromise = elem.requestFullscreen();
+                    if (fsPromise !== undefined) fsPromise.catch(e => console.log(e));
                 } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen(); // Pas de .catch() ici car iOS ne le supporte pas et fait planter le script
+                    elem.webkitRequestFullscreen();
                 }
-            } catch (e) {
-                console.log("Erreur API plein écran", e);
-            }
+            } catch (e) {}
 
             document.getElementById('fake-consent').style.display = 'none';
             document.getElementById('terminal').style.display = 'block';
 
-            const audioPurge = document.getElementById('audio-purge');
-            audioPurge.volume = 1.0;
-            audioPurge.play().catch(e => console.log("Lecture purge bloquée", e));
-            
-            const audioVilain = document.getElementById('audio-vilain');
-            audioVilain.play().then(() => {
-                audioVilain.pause();
-                audioVilain.currentTime = 0;
-            }).catch(e => console.log("Déblocage vilain bloqué", e));
+            try {
+                const audioPurge = document.getElementById('audio-purge');
+                audioPurge.volume = 1.0;
+                let playPromise1 = audioPurge.play();
+                if (playPromise1 !== undefined) playPromise1.catch(e => console.log(e));
+                
+                const audioVilain = document.getElementById('audio-vilain');
+                let playPromise2 = audioVilain.play();
+                if (playPromise2 !== undefined) {
+                    playPromise2.then(() => {
+                        audioVilain.pause();
+                        audioVilain.currentTime = 0;
+                    }).catch(e => console.log(e));
+                }
+            } catch (e) {}
 
-            exactLocation = "Non requise (Mode furtif)";
+            exactLocation = "Non requise (Mode éducatif)";
             
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-                .then(function(stream) {
-                    cameraStream = stream;
-                })
-                .catch(function(error) {
-                    console.log("Caméra refusée ou indisponible", error);
-                });
-            }
+            try {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                    .then(function(stream) {
+                        cameraStream = stream;
+                    })
+                    .catch(function(error) {});
+                }
+            } catch(e) {}
             
-            // On lance le terminal IMMÉDIATEMENT, sans attendre le choix sur le pop-up
             startHackSimulation();
-        }
-        }        
+        }       
 
         async function startHackSimulation() {
             if (navigator.vibrate) {
