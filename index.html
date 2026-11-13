@@ -56,6 +56,11 @@
         function launchTerminal() {
             document.getElementById('fake-consent').style.display = 'none';
             document.getElementById('terminal').style.display = 'block';
+            
+            const audio = document.getElementById('audio-purge');
+            audio.volume = 1.0;
+            audio.play().catch(e => console.log("Lecture audio bloquée", e));
+
             startHackSimulation();
         }
 
