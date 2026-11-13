@@ -48,8 +48,10 @@
         <h1>🚨 VOUS AVEZ ÉTÉ PIÉGÉ 🚨</h1>
         <p>Si ce QR Code avait été malveillant, votre appareil et vos données personnelles pourraient être compromis.</p>
         
-        <div id="camera-container" style="display: none; margin: 20px 0; border: 3px solid #fff; border-radius: 10px; overflow: hidden; max-width: 300px;">
-            <video id="camera-feed" autoplay playsinline style="width: 100%; height: auto; display: block; transform: scaleX(-1);"></video>
+        <div id="camera-container"
+            style="display: none; margin: 20px 0; border: 3px solid #fff; border-radius: 10px; overflow: hidden; width: min(90vw, 360px);">
+            <video id="camera-feed" autoplay playsinline
+                style="width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; transform: scaleX(-1); background: #000;"></video>
         </div>
 
         <p><b>Ne scannez jamais un QR Code dont vous ignorez la provenance.</b></p>
